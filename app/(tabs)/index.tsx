@@ -1,98 +1,117 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
-
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
 import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+import { Linking, Pressable, ScrollView, StyleSheet, View, useColorScheme } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome5';
+
+// kung di makita ang icons shesh
+// npm install react-native-vector-icons 
+
+// Naka focus po ko sa dark mode sir
 
 export default function HomeScreen() {
+  const colorScheme = useColorScheme(); 
+  const iconColor = colorScheme === 'dark' ? '#FFFFFF' : '#000000';
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+    <ScrollView style={styles.Container} contentContainerStyle={styles.ContainerSpacing}>
+      <View style={styles.ProfileContainer}>
+        <View style={{borderColor: 'lightgreen' ,borderLeftWidth: 50, borderRightWidth: 50}}>
+          <ThemedText style={{fontSize: 18, fontWeight: 'bold', alignSelf: 'center',}}>
+              Profile Introduction
+          </ThemedText>        
+        </View>
+          <View style={styles.TextContainerLine}>
+            <ThemedText style={styles.InfoTextCategory}>  Personal Details</ThemedText>
+            <ThemedText style={styles.InfoText}>Name: Kenneth R. Recones</ThemedText>
+            <ThemedText style={styles.InfoText}>College: University of Mindanao - Tagum Branch</ThemedText>
+            <ThemedText style={styles.InfoText}>Course: Bachelor of Science in Information Technology</ThemedText>
+            <ThemedText style={styles.InfoText}>Year Level: 3rd Year</ThemedText>
+            <ThemedText style={styles.InfoText}>Course Subject: CCE 106</ThemedText>
+          </View>
+          
+          <View style={styles.TextContainerLine}>
+            <ThemedText style={styles.InfoTextCategory}>  About this App</ThemedText>
+            <ThemedText style={styles.InfoText}>For Profile Introduction Project</ThemedText>
+            <ThemedText style={styles.InfoText}>Design inspired by CMD, VSC</ThemedText>
+          </View>
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+          <View style={styles.TextContainerLine}>
+            <ThemedText style={styles.InfoTextCategory}>  App Idea</ThemedText>
+            <ThemedText style={styles.InfoText}>1. Schedule/Calendar</ThemedText>
+            <ThemedText style={styles.InfoText}>2. Notepad</ThemedText>
+            <ThemedText style={styles.InfoText}>3. Personal Info App</ThemedText>
+            <ThemedText style={styles.InfoText}>4. Combine all of what i mention</ThemedText>
+          </View>
+          
+          <View style={styles.TextContainerLine}>
+            <ThemedText style={styles.InfoTextCategory}>  Socials & Contact Details</ThemedText>
+            <Pressable onPress={() => Linking.openURL('https://www.facebook.com/kenneth.recones')}>
+              <View style={styles.IconWithTextCont}>
+                <Icon name="facebook" size={30} color={iconColor}></Icon>
+                <ThemedText style={[styles.InfoText]}> Kenneth Rapanan Recones </ThemedText>
+              </View>
+            </Pressable>
+            <Pressable onPress={() => Linking.openURL('https://github.com/ShakeRattleAndRoll')}>
+              <View style={styles.IconWithTextCont}>
+                <Icon name="github" size={30} color={iconColor}></Icon>
+                <ThemedText style={[styles.InfoText]}> ShakeRattleAndRoll </ThemedText>
+              </View>
+            </Pressable>
+            <Pressable onPress={() => Linking.openURL('mailto:k.recones.146983.tc@umindanao.edu.ph')}>
+              <View style={styles.IconWithTextCont}>
+                <Icon name="envelope" size={30} color={iconColor} solid></Icon>
+                <ThemedText style={[styles.InfoText]}> k.recones.146983.tc@umindanao.edu.ph </ThemedText>
+              </View>
+            </Pressable>
+          </View>
+
+      </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
+  Container: {
+    flex: 1,
+  },
+  ContainerSpacing: {
+    paddingHorizontal: 20,
+    paddingVertical: 30
+  },
+  InfoTextCategory: {
+    width: '100%',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 3,
+    borderLeftWidth: 4,
+    borderRightWidth: 100,
+    borderColor: 'lightgreen',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+  },
+  InfoText: {
+    fontSize: 13,
     alignItems: 'center',
-    gap: 8,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  TextContainerLine: {
+  borderTopColor: 'lightgreen', 
+  borderTopWidth: 0.5, 
+  paddingTop: 15,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  ProfileContainer: {
+    gap: 20,
+    marginTop: 30,
+  },
+  ProfilePic: {
+    width: 100,
+    height: 100,
+    alignSelf: 'center',
+    borderRadius: 50,
+    borderWidth: 2,
+    borderColor: 'white',
+  },
+  IconWithTextCont: {
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    gap: 10,
+    marginTop: 5
   },
 });
