@@ -1,107 +1,181 @@
-import { ThemedText } from '@/components/themed-text';
-import { useState } from 'react';
-import { Pressable, StyleSheet, Text, useColorScheme, View } from 'react-native';
+import { ThemedText } from "@/components/themed-text";
+import { useState } from "react";
+import { Keyboard, Pressable, StyleSheet, TextInput, TouchableWithoutFeedback, View, useColorScheme } from "react-native";
 
 export default function HomeScreen() {
-  
-  const [ClickCount, AllCount] = useState(0);
-  const [message, setMessage] = useState('');
-
-  function Increase() {
-    AllCount(ClickCount => ClickCount + 1);
-    setMessage('');
-  }
-
-  function Decrease() {
-    if (ClickCount > 0) {
-      AllCount(ClickCount => ClickCount - 1);
-      setMessage('');
-    } else {
-      setMessage('Cant go below 0');
-    }
-  }
-
-  function Reset() {
-    AllCount(0);
-    setMessage('');
-  }
 
   const colorScheme = useColorScheme();
-  let countTextColor = colorScheme === 'dark' ? 'white' : 'dark';
 
-  if (ClickCount >= 100) {
-    countTextColor = 'red';
-  } else if (ClickCount >= 50) {
-    countTextColor = 'yellow'
-  } else if (ClickCount >= 25) {
-    countTextColor = 'green'
+  let textColorScheme = colorScheme === 'dark' ? 'white' : 'black';
+
+  const [firstValue, SetfirstValue] = useState("");
+  const [secondValue, SetsecondValue] = useState("");
+  const [result, Setresult] = useState("");
+  const [firstfocus, setFirstfocus] = useState(false);
+  const [secondfocus, setSecondfocus] = useState(false);
+  const [tap, setTap] = useState(false);
+
+  function Addition() {
+    const num1 = Number(firstValue) || 0;
+    const num2 = Number(secondValue) || 0;
+    Setresult((num1 + num2).toString());
+  }; 
+
+  function Subtraction() {
+    const num1 = Number(firstValue) || 0;
+    const num2 = Number(secondValue) || 0;
+    Setresult((num1 - num2).toString());
+  };
+
+  function Multiplication() {
+    const num1 = Number(firstValue) || 0;
+    const num2 = Number(secondValue) || 0;
+    Setresult((num1 * num2).toString());
+  };
+
+  function Division() {
+    const num1 = Number(firstValue) || 0;
+    const num2 = Number(secondValue) || 0;
+    if (num2 == 0) {
+      Setresult('Cant Divide with 0');
+    } else {
+      Setresult((num1 / num2).toString());
+    }
+  };
+
+  function reset() {
+    SetsecondValue('');
+    SetfirstValue('');
+    Setresult('');
   }
 
   return (
-    <View style={styles.Container}>
-      <ThemedText style={[styles.CountText, {color: countTextColor}]}>{ClickCount}</ThemedText>
-      <ThemedText style={styles.messageText}>{message}</ThemedText>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      <View style={styles.container}>
+        <View style={styles.inputValueContainer}>
+          <View style={[styles.perValueContainer, firstfocus && styles.whenFocus]}>
+            <TextInput 
+              style={[styles.valueText, {color: textColorScheme}]}          
+              placeholderTextColor={textColorScheme}
+              value={firstValue} 
+              keyboardType="numeric"
+              maxLength={10}
+              onChangeText={(val) => SetfirstValue(val)}
+              onFocus={() => setFirstfocus(true)}
+              onBlur={() => setFirstfocus(false)}
+              placeholder="..."
+              />
+          </View>
 
-      <View style={styles.ButtonContainer}>
-        <Pressable style={styles.ButtonDesign} onPress={Increase}>
-          <Text style={styles.ButtonTextDesign}>
-            Increase
-          </Text>
-        </Pressable>
-        <Pressable style={[styles.ButtonDesign, styles.DecreaseButton]} onPress={Decrease}>
-          <Text style={styles.ButtonTextDesign}>
-            Decrease
-          </Text>
-        </Pressable>
-        <Pressable style={[styles.ButtonDesign, styles.ResetButton]} onPress={Reset}>
-          <Text style={styles.ButtonTextDesign}>
-            Reset
-          </Text>
-        </Pressable>
+          <View style={[styles.perValueContainer, secondfocus && styles.whenFocus]}>
+            <TextInput
+              style={[styles.valueText, {color: textColorScheme}]}
+              placeholderTextColor={textColorScheme}
+              value={secondValue}
+              keyboardType="numeric"
+              maxLength={10}
+              onChangeText={(val) => SetsecondValue(val)}
+              onFocus={() => setSecondfocus(true)}
+              onBlur={() => setSecondfocus(false)}
+              placeholder="..."
+            />
+          </View>
+        </View>
+
+        <View style={styles.perResultCont}>
+          <ThemedText style={styles.valueText}>{result}</ThemedText>
+        </View>
+
+        <View style={styles.arithmeticCont}>
+          <Pressable style={({ pressed }) => [styles.perArithmeticCont, pressed && styles.whenTapArithmetic]} onPress={Addition}>
+            <ThemedText style={styles.arithmeticText}>+</ThemedText>
+          </Pressable>
+          <Pressable style={({ pressed }) => [styles.perArithmeticCont, pressed && styles.whenTapArithmetic]} onPress={Subtraction}>
+            <ThemedText style={styles.arithmeticText}>-</ThemedText>
+          </Pressable>
+          <Pressable style={({ pressed }) => [styles.perArithmeticCont, pressed && styles.whenTapArithmetic]} onPress={Multiplication}>
+            <ThemedText style={styles.arithmeticText}>×</ThemedText>
+          </Pressable>
+          <Pressable style={({ pressed }) => [styles.perArithmeticCont, pressed && styles.whenTapArithmetic]} onPress={Division}>
+            <ThemedText style={styles.arithmeticText}>÷</ThemedText>
+          </Pressable>
+        </View>
+
+        <View>
+          <Pressable 
+            style={({pressed}) => [styles.perArithmeticCont, styles.resetDesign, pressed && styles.whenTapReset]}
+            onPress={reset}>
+            <ThemedText style={{fontSize: 24}}>
+              R
+            </ThemedText>
+          </Pressable>
+        </View>
       </View>
-      
-    </View>
+    </TouchableWithoutFeedback>
   );
 }
 
 const styles = StyleSheet.create({
-  Container: {
+  container: {
     flex: 1,
+    alignItems: 'center',
     justifyContent: 'center',
-    gap: 100,
+    gap: 40,
+    backgroundColor: '#6697bad1',
   },
-  CountText: {
-    alignSelf: 'center',
-    fontWeight: 'bold',
-    fontSize: 30,
-  },
-  ButtonDesign: {
-    width: 100,
-    paddingVertical: 20,
-    marginHorizontal: 10,
-    backgroundColor: 'green',
-    borderRadius: 8,
-  },
-  ButtonTextDesign: {
-    alignSelf: 'center',
-    fontWeight: 'bold',
-    color: 'white',
-    fontSize: 12
-  },
-  ButtonContainer: {
+  inputValueContainer: {
     flexDirection: 'row',
-    justifyContent: 'center'
+    gap: 50,
   },
-  DecreaseButton: {
-    backgroundColor: 'red',
+  perValueContainer: {
+    width: 120,
+    height: 60,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 4,
+    borderWidth: 0.4,
+    backgroundColor: '#6697ba',
   },
-  ResetButton: {
-    backgroundColor: 'grey',
-  },
-  messageText: {
-    fontSize: 20,
+  valueText: {
+    fontSize: 16,
     fontWeight: 'bold',
-    alignSelf: 'center',
-    color: 'red',
+  },
+  perResultCont: {
+    width: 200,
+    height: 60,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 4,
+    borderWidth: 0.4,
+    backgroundColor: '#6697ba',
+  },
+  arithmeticCont: {
+    flexDirection: 'row',
+    gap: 20,
+  },
+  arithmeticText: {
+    fontSize: 40
+  },
+  perArithmeticCont: {
+    width: 60,
+    height: 60,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 4,
+    borderWidth: 0.4,
+    backgroundColor: '#6697ba',
+  },
+  whenFocus: {
+    backgroundColor: '#5aa54f',
+  },
+  whenTapArithmetic: {
+    backgroundColor: '#4d728d1b',
+  },
+  whenTapReset: {
+    backgroundColor: '#5a2121',
+  },
+  resetDesign: {
+    borderRadius: 100, 
+    backgroundColor: '#d34c4c',
   },
 });
