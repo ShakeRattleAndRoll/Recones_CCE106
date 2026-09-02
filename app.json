@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "SimpleCalculator",
-    "slug": "SimpleCalculator",
+    "name": "StudentTaskManager",
+    "slug": "StudentTaskManager",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "simplecalculator",
+    "scheme": "studenttaskmanager",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
