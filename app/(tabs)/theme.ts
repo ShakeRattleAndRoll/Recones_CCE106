@@ -1,11 +1,10 @@
 export const theme = {
     color: {
-        background: '#303030',
-        primary: '#89e472',
-        secondary: '#4c96399a',
-        metric: '#293929',
-        perMetric: '#5e8a5f',
-        disabled: '#34C759',
+        background: '#eae5e5',
+        primary: '#ffffff',
+        secondary: '#edecec',
+        button: '#96c8f7',
+        buttonContent: '#1262ad',
     },
     spacing: {
         trueCenter: {

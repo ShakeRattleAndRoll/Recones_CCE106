@@ -1,0 +1,96 @@
+
+
+  <!-- <View style={styles.topTitleContainer}>
+          <Text style={styles.topTitleText}>Attendance Metric Activity</Text>
+        </View>
+  
+        <View style={styles.headerContainer}>
+          <View style={styles.profileTopRow}>
+            <Text style={styles.profileTitleText}>Profile</Text>
+          </View>
+  
+          <View style={styles.profileButtomRow}>
+            <TouchableOpacity onPress={pickImage} activeOpacity={0.8} style={styles.profileWrapper}>
+              <Image style={styles.profilePic} source={profilePic} />
+              <View style={styles.editBadge}>
+                <FontAwesome name="camera" size={10} color="#303030" />
+              </View>
+            </TouchableOpacity>
+  
+            <View style={styles.userInfoContainer}>
+              <Text style={styles.userNameText}>Kenneth R. Recones</Text>
+              <Text style={styles.userDegreeText}>
+                Bachelor of Science in Information Technology
+              </Text>
+            </View>
+          </View>
+        </View> -->
+
+        <!-- headerContainer: {
+    padding: 16,
+    width: '100%',
+    backgroundColor: theme.color.primary,
+    borderRadius: 16,
+    gap: 12,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+  },
+  profileTopRow: {
+    width: '100%',
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(0,0,0,0.08)',
+    paddingBottom: 8,
+  },
+  profileTitleText: {
+    fontSize: 12,
+    fontWeight: '700',
+    textTransform: 'uppercase',
+    letterSpacing: 0.8,
+    opacity: 0.7,
+  },
+  profileButtomRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 14,
+    width: '100%',
+  },
+  profileWrapper: {
+    position: 'relative',
+  },
+  profilePic: {
+    width: 68,
+    height: 68,
+    borderRadius: 34,
+    resizeMode: 'cover',
+    borderWidth: 2,
+    borderColor: '#ffffff',
+  },
+  editBadge: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    backgroundColor: '#ffffff',
+    borderRadius: 10,
+    width: 20,
+    height: 20,
+    ...theme.spacing.trueCenter,
+    elevation: 2,
+  },
+  userInfoContainer: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  userNameText: {
+    ...theme.typography.header,
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 2,
+  },
+  userDegreeText: {
+    fontSize: 13,
+    opacity: 0.85,
+    flexShrink: 1,
+  }, -->
