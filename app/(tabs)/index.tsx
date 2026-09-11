@@ -1,307 +1,371 @@
-import { ThemedText } from '@/components/themed-text';
+import { FontAwesome } from '@expo/vector-icons';
+import * as ImagePicker from 'expo-image-picker';
 import React, { useState } from 'react';
-import { Alert, Image, Pressable, ScrollView, StyleSheet, TextInput, View, } from 'react-native';
+import { Image, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { theme } from './theme';
 
-interface Task {
-  id: string;
-  title: string;
-  dueDate: string;
-  completed: boolean;
-}
+// ang formation nag base ra sa example sa ppt
+
+// Picture picker
+// npx expo install expo-image-picker
 
 export default function HomeScreen() {
-  const [tasks, setTasks] = useState<Task[]>([
-    { id: '1', title: 'Submit CCE106 Activity 1', dueDate: '2026-09-05', completed: false },
-    { id: '2', title: 'Study React Native Hooks', dueDate: '2026-09-07', completed: true },
-  ]);
-  const [taskTitle, setTaskTitle] = useState('');
-  const [dueDate, setDueDate] = useState('');
 
-  const handleAddTask = () => {
-    if (!taskTitle.trim() || !dueDate.trim()) {
-      Alert.alert('Validation Error', 'Please enter both a task title and a due date.');
+  // Profile Picture
+  const DEFAULT_PROFILE = require('@/assets/images/Default_pfp.jpg');
+  const [profilePic, setprofilePic] = useState(DEFAULT_PROFILE);
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: 'images',
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.8,
+    });
+    if (!result.canceled) {
+      setprofilePic({ uri: result.assets[0].uri });
+    }
+  };
+
+  // Login 
+  const [lastloginDate, setlastloginDate] = useState<string | null>(null);
+  const [lastlogin, setlastlogin] = useState('No login recorded yet!');
+  const [login, setlogin] = useState(0);
+  const [longestLogin, setlongestLogin] = useState(10);
+  const [overallLogin, setoverallLogin] = useState(14);
+  const [metricChanges, setMetricChanges] = useState({ current: 0, best: 0, total: 0 });
+
+  function Loging_in() {
+    const now = new Date();
+    const currentDate = now.toDateString();
+    const dateAndtime = now.toLocaleString();
+
+    if (lastloginDate === currentDate) {
+      alert('You already logged in today! Come back tomorrow.');
       return;
     }
 
-    const newTask: Task = {
-      id: Date.now().toString(),
-      title: taskTitle.trim(),
-      dueDate: dueDate.trim(),
-      completed: false,
-    };
+    const newLogin = login + 1;
+    const newOverall = overallLogin + 1;
+    const newLongest = Math.max(longestLogin, newLogin);
 
-    setTasks((prev) => [...prev, newTask]);
-    setTaskTitle('');
-    setDueDate('');
-    Alert.alert('Success', 'Task added successfully!');
-  };
+    setlogin(newLogin);
+    setoverallLogin(newOverall);
+    setlongestLogin(newLongest);
+    setMetricChanges({
+      current: newLogin - login,
+      best: newLongest - longestLogin,
+      total: newOverall - overallLogin,
+    });
 
-  const handleToggleTask = (id: string) => {
-    setTasks((prev) =>
-      prev.map((task) => {
-        if (task.id === id) {
-          const updatedState = !task.completed;
-          Alert.alert(
-            'Task Updated',
-            `Task marked as ${updatedState ? 'completed' : 'pending'}.`
-          );
-          return { ...task, completed: updatedState };
-        }
-        return task;
-      })
-    );
-  };
+    setlastlogin(dateAndtime);
+    setlastloginDate(currentDate);
+  }
 
-  const handleDeleteTask = (id: string) => {
-    Alert.alert('Delete Task', 'Are you sure you want to delete this task?', [
-      { text: 'Cancel', style: 'cancel' },
-      {
-        text: 'Delete',
-        style: 'destructive',
-        onPress: () => {
-          setTasks((prev) => prev.filter((t) => t.id !== id));
-        },
-      },
-    ]);
-  };
-
-  const pendingCount = tasks.filter((t) => !t.completed).length;
-  const completedCount = tasks.filter((t) => t.completed).length;
+  const isTodayLoggedIn = lastloginDate === new Date().toDateString();
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView style={styles.container} contentContainerStyle={styles.subContainer}>
 
-      <View style={styles.profileContainer}>
-        <View style={styles.avatarWrapper}>
-          <Image
-            source={require('@/assets/images/Skeleton-Gun.jpg')}
-            style={styles.profilePicture}
-          />
+      <View style={styles.topTitleContainer}>
+        <Text style={styles.topTitleText}>Attendance Metric Activity</Text>
+      </View>
+
+      <View style={styles.headerContainer}>
+        <View style={styles.profileTopRow}>
+          <Text style={styles.profileTitleText}>Profile</Text>
         </View>
 
-        <View style={styles.textContainer}>
-          <ThemedText style={styles.name} numberOfLines={1}>
-            Kenneth R. Recones
-          </ThemedText>
-          <ThemedText style={styles.degree}>
-            Bachelor of Science in Information Technology
-          </ThemedText>
+        <View style={styles.profileButtomRow}>
+          <TouchableOpacity onPress={pickImage} activeOpacity={0.8} style={styles.profileWrapper}>
+            <Image style={styles.profilePic} source={profilePic} />
+            <View style={styles.editBadge}>
+              <FontAwesome name="camera" size={10} color="#303030" />
+            </View>
+          </TouchableOpacity>
+
+          <View style={styles.userInfoContainer}>
+            <Text style={styles.userNameText}>Kenneth R. Recones</Text>
+            <Text style={styles.userDegreeText}>
+              Bachelor of Science in Information Technology
+            </Text>
+          </View>
         </View>
       </View>
 
-      <View style={styles.counterRow}>
-        <View style={[styles.counterBadge, styles.pendingBadge]}>
-          <ThemedText style={styles.counterText}>Pending: {pendingCount}</ThemedText>
+      <View style={styles.metricContainer}>
+
+        <View style={styles.perMetricContainer}>
+          <Text style={styles.metricTitle}>Current Streak</Text>
+            <View style={styles.metricResultRow}>
+            <View style={styles.metricValueWithBadge}>
+              <Text style={styles.resultText}>{login}</Text>
+              {metricChanges.current > 0 && (
+                <View style={styles.plusBadge}>
+                  <Text style={styles.plusBadgeText}>+{metricChanges.current}</Text>
+                </View>
+              )}
+            </View>
+            <FontAwesome name="fire" size={18} color="#FF5722" />
+          </View>
         </View>
-        <View style={[styles.counterBadge, styles.completedBadge]}>
-          <ThemedText style={styles.counterText}>Completed: {completedCount}</ThemedText>
+
+        <View style={styles.perMetricContainer}>
+          <Text style={styles.metricTitle}>Best Streak</Text>
+            <View style={styles.metricResultRow}>
+            <View style={styles.metricValueWithBadge}>
+              <Text style={styles.resultText}>{longestLogin}</Text>
+              {metricChanges.best > 0 && (
+                <View style={styles.plusBadge}>
+                  <Text style={styles.plusBadgeText}>+{metricChanges.best}</Text>
+                </View>
+              )}
+            </View>
+            <FontAwesome name="trophy" size={18} color="#d1c300" />
+          </View>
         </View>
+
+        <View style={styles.perMetricContainer}>
+          <Text style={styles.metricTitle}>Total Logins</Text>
+            <View style={styles.metricResultRow}>
+            <View style={styles.metricValueWithBadge}>
+              <Text style={styles.resultText}>{overallLogin}</Text>
+              {metricChanges.total > 0 && (
+                <View style={styles.plusBadge}>
+                  <Text style={styles.plusBadgeText}>+{metricChanges.total}</Text>
+                </View>
+              )}
+            </View>
+            <FontAwesome name="calendar" size={18} color="#303030" />
+          </View>
+        </View>
+
       </View>
 
-      <View style={styles.formContainer}>
-        <ThemedText style={styles.sectionTitle}>Add New Task</ThemedText>
-        <TextInput
-          style={styles.textInput}
-          placeholder="Task Title"
-          value={taskTitle}
-          onChangeText={setTaskTitle}
-        />
-        <TextInput
-          style={styles.textInput}
-          placeholder="Due Date"
-          value={dueDate}
-          onChangeText={setDueDate}
-        />
+      <View style={styles.actionCardContainer}>
+        <Text style={styles.sectionHeading}>Daily Check-In</Text>
         <Pressable
-          style={({ pressed }) => [styles.addButton, pressed && styles.pressedState]}
-          onPress={handleAddTask}
+          style={({ pressed }) => [
+            styles.actionButton,
+            isTodayLoggedIn && styles.actionButtonDisabled,
+            { opacity: pressed ? 0.85 : 1 },
+          ]}
+          onPress={Loging_in}
         >
-          <ThemedText style={styles.addButtonText}>Add Task</ThemedText>
+          <Text style={styles.actionText}>
+            {isTodayLoggedIn ? 'Logged In Today' : 'Record Daily Attendance'}
+          </Text>
         </Pressable>
       </View>
 
-      <View style={styles.listContainer}>
-        <ThemedText style={styles.sectionTitle}>Task List</ThemedText>
-        {tasks.length === 0 ? (
-          <ThemedText style={styles.emptyText}>No tasks added yet.</ThemedText>
-        ) : (
-          tasks.map((task) => (
-            <View key={task.id} style={styles.taskCard}>
-              <Pressable
-                style={styles.taskInfo}
-                onPress={() => handleToggleTask(task.id)}
-              >
-                <ThemedText
-                  style={[
-                    styles.taskTitle,
-                    task.completed && styles.completedText,
-                  ]}
-                >
-                  {task.completed ? '✓' : '○ '}
-                  {task.title}
-                </ThemedText>
-                <ThemedText style={styles.taskDate}>Due: {task.dueDate}</ThemedText>
-              </Pressable>
-
-              <Pressable
-                style={({ pressed }) => [
-                  styles.deleteButton,
-                  pressed && styles.pressedState,
-                ]}
-                onPress={() => handleDeleteTask(task.id)}
-              >
-                <ThemedText style={styles.deleteButtonText}>Delete</ThemedText>
-              </Pressable>
-            </View>
-          ))
-        )}
+      <View style={styles.recentActContainer}>
+        <Text style={styles.recentActHeader}>Recent Activity</Text>
+        <Text style={styles.recentActText}>{lastlogin}</Text>
       </View>
+
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flexGrow: 1,
-    padding: 16,
-    paddingTop: 50,
+    flex: 1,
+    backgroundColor: theme.color.background,
   },
-  profileContainer: {
+  subContainer: {
+    paddingHorizontal: 16,
+    paddingVertical: 24,
+    gap: 16,
+  },
+
+  // Top Title
+  topTitleContainer: {
+    paddingVertical: 4,
+  },
+  topTitleText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#ffffff',
+  },
+
+  // Header Profile
+  headerContainer: {
+    padding: 16,
+    width: '100%',
+    backgroundColor: theme.color.primary,
+    borderRadius: 16,
+    gap: 12,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+  },
+  profileTopRow: {
+    width: '100%',
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(0,0,0,0.08)',
+    paddingBottom: 8,
+  },
+  profileTitleText: {
+    fontSize: 12,
+    fontWeight: '700',
+    textTransform: 'uppercase',
+    letterSpacing: 0.8,
+    opacity: 0.7,
+  },
+  profileButtomRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 16,
-    paddingHorizontal: 16,
-    backgroundColor: '#96da95',
-    borderRadius: 12,
-    borderWidth: 0.4,
+    gap: 14,
     width: '100%',
   },
-  avatarWrapper: {
-    marginRight: 12,
+  profileWrapper: {
+    position: 'relative',
   },
-  profilePicture: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+  profilePic: {
+    width: 68,
+    height: 68,
+    borderRadius: 34,
+    resizeMode: 'cover',
+    borderWidth: 2,
+    borderColor: '#ffffff',
   },
-  textContainer: {
+  editBadge: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    backgroundColor: '#ffffff',
+    borderRadius: 10,
+    width: 20,
+    height: 20,
+    ...theme.spacing.trueCenter,
+    elevation: 2,
+  },
+  userInfoContainer: {
     flex: 1,
     justifyContent: 'center',
   },
-  name: {
+  userNameText: {
+    ...theme.typography.header,
+    fontSize: 18,
     fontWeight: 'bold',
-    color: '#1a3e19',
-    fontSize: 16,
-    marginBottom: 4,
+    marginBottom: 2,
   },
-  degree: {
-    fontSize: 12,
-    color: '#2d5a2c',
-    flexWrap: 'wrap',
-    lineHeight: 16,
-  },
-  counterRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginVertical: 16,
-  },
-  counterBadge: {
-    flex: 0.48,
-    paddingVertical: 10,
-    borderRadius: 8,
-    alignItems: 'center',
-    borderWidth: 0.4,
-  },
-  pendingBadge: {
-    backgroundColor: '#ffe0b2',
-  },
-  completedBadge: {
-    backgroundColor: '#c8e6c9',
-  },
-  counterText: {
-    fontWeight: 'bold',
-    color: '#333',
+  userDegreeText: {
     fontSize: 13,
+    opacity: 0.85,
+    flexShrink: 1,
   },
-  formContainer: {
-    width: '100%',
-    backgroundColor: '#f5f5f5',
-    padding: 14,
-    borderRadius: 10,
-    marginBottom: 20,
-  },
-  sectionTitle: {
-    fontWeight: 'bold',
-    fontSize: 16,
-    marginBottom: 10,
-  },
-  textInput: {
-    height: 42,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    backgroundColor: '#fff',
-    marginBottom: 10,
-  },
-  addButton: {
-    backgroundColor: '#2e7d32',
-    paddingVertical: 12,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  addButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
-  },
-  listContainer: {
-    width: '100%',
-  },
-  emptyText: {
-    textAlign: 'center',
-    color: '#888',
-    marginTop: 10,
-  },
-  taskCard: {
+
+  // Metric Section
+  metricContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    borderWidth: 1,
-    borderColor: '#eee',
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 10,
+    width: '100%',
+    gap: 8,
   },
-  taskInfo: {
+  perMetricContainer: {
     flex: 1,
+    backgroundColor: theme.color.primary,
+    paddingTop: 18,
+    paddingBottom: 12,
+    paddingHorizontal: 4,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 1,
   },
-  taskTitle: {
-    fontSize: 15,
-    fontWeight: '600',
+  metricTitle: {
+    ...theme.typography.metric,
+    fontSize: 11,
+    opacity: 0.8,
+    marginBottom: 6,
+    textAlign: 'center',
   },
-  completedText: {
-    textDecorationLine: 'line-through',
-    color: '#888',
+  resultText: {
+    ...theme.typography.result,
+    fontSize: 18,
+    fontWeight: 'bold',
+    lineHeight: 22,
   },
-  taskDate: {
-    fontSize: 12,
-    color: '#666',
-    marginTop: 2,
+  metricResultRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 12,
   },
-  deleteButton: {
-    backgroundColor: '#d32f2f',
-    paddingVertical: 6,
-    paddingHorizontal: 10,
-    borderRadius: 6,
-    marginLeft: 10,
+
+  metricValueWithBadge: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 3,
   },
-  deleteButtonText: {
-    color: '#fff',
-    fontSize: 12,
+  plusBadge: {
+    backgroundColor: '#303030',
+    minWidth: 18,
+    paddingHorizontal: 4,
+    paddingVertical: 2,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: -5,
+    elevation: 2,
+  },
+  plusBadgeText: {
+    color: '#89e472',
+    fontSize: 10,
     fontWeight: 'bold',
   },
-  pressedState: {
-    opacity: 0.6,
+
+  // Action 
+  actionCardContainer: {
+    width: '100%',
+    backgroundColor: theme.color.primary,
+    padding: 16,
+    borderRadius: 14,
+    gap: 12,
+    elevation: 1,
+  },
+  sectionHeading: {
+    fontSize: 14,
+    fontWeight: '600',
+    opacity: 0.9,
+  },
+  actionButton: {
+    width: '100%',
+    paddingVertical: 14,
+    backgroundColor: theme.color.secondary,
+    borderRadius: 10,
+    ...theme.spacing.trueCenter,
+  },
+  actionButtonDisabled: {
+    backgroundColor: theme.color.disabled,
+    opacity: 0.9,
+  },
+  actionText: {
+    ...theme.typography.action,
+    fontWeight: 'bold',
+    fontSize: 15,
+  },
+
+  // Recent Action
+  recentActContainer: {
+    width: '100%',
+    backgroundColor: theme.color.primary,
+    padding: 16,
+    borderRadius: 14,
+    gap: 4,
+    elevation: 1,
+  },
+  recentActHeader: {
+    fontSize: 12,
+    opacity: 0.7,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  recentActText: {
+    ...theme.typography.header,
+    fontSize: 14,
+    fontWeight: '500',
   },
 });
