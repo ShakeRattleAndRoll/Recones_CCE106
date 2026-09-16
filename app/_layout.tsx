@@ -4,6 +4,7 @@ import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { Eventprovider } from '@/components/eventcontext';
 
 export const unstable_settings = {
   anchor: '(tabs)',
@@ -14,13 +15,17 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+      <Eventprovider>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="course/[id]" options={{ title: 'Course Details' }} />
+        <Stack.Screen name="event/[id]" options={{ title: 'Event Details' }} />
+        <Stack.Screen name="course/[id]" options={{ title: 'Course Tasks' }} />
+        <Stack.Screen name="task/[id]" options={{ title: 'Task Details' }} />
         <Stack.Screen name="student/[id]" options={{ title: 'Student Details' }} />
         <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
       </Stack>
       <StatusBar style="auto" />
+      </Eventprovider>
     </ThemeProvider>
   );
 }

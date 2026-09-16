@@ -3,7 +3,7 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { theme } from '../(tabs)/theme';
 
-export default function student() {
+export default function Student() {
   const { id } = useLocalSearchParams<{ id: string }>();
 
   return (

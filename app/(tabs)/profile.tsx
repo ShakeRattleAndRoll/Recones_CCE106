@@ -2,13 +2,18 @@ import { FontAwesome } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
 import React, { useState } from 'react';
-import { Image, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { theme } from './theme';
 
 export default function Profile() {
 
     const DEFAULT_PROFILE = require('@/assets/images/Default_pfp.jpg');
     const [profilePic, setprofilePic] = useState(DEFAULT_PROFILE);
+    const [fullname, setfullname] = useState('Kenneth R. Recones');
+    const [program, setprogram] = useState('Bachelor of Sciences in Information Technology');
+    const [savedname, setsavedname] = useState('Kenneth R. Recones');
+    const [error, seterror] = useState('');
+    const [saved, setsaved] = useState(false);
 
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -22,6 +27,17 @@ export default function Profile() {
         }
     };
 
+    const saveProfile = () => {
+        if (!fullname.trim()) {
+            seterror('Full name is required.');
+            setsaved(false);
+            return;
+        }
+        setsavedname(fullname.trim());
+        seterror('');
+        setsaved(true);
+    };
+
     return (
         <ScrollView contentContainerStyle={styles.container}>
 
@@ -33,10 +49,23 @@ export default function Profile() {
                     </View>
                 </TouchableOpacity>
                 <View style={styles.userContainer}>
-                    <Text style={styles.userInfo}>Kenneth R. Recones</Text>
-                    <Text style={styles.courseInfo}>Bachelor of Sciences in Information Technology</Text>
+                <Text style={styles.userInfo}>{savedname}</Text>
+                    <Text style={styles.courseInfo}>{program}</Text>
                 </View>
                 <Text style={styles.IDinfo}>Student ID: 146983</Text>
+            </View>
+
+            <View style={styles.formContainer}>
+                <Text style={styles.extraInfoTitle}>Edit Profile</Text>
+                <Text style={styles.inputLabel}>Full Name</Text>
+                <TextInput value={fullname} onChangeText={(value) => { setfullname(value); seterror(''); setsaved(false); }} style={styles.input} placeholder="Enter your full name" />
+                <Text style={styles.inputLabel}>Program</Text>
+                <TextInput value={program} onChangeText={(value) => { setprogram(value); setsaved(false); }} style={styles.input} placeholder="Enter your program" />
+                {!!error && <Text style={styles.error}>{error}</Text>}
+                {saved && <Text style={styles.success}>Profile saved successfully.</Text>}
+                <Pressable onPress={saveProfile} style={({ pressed }) => [styles.save, pressed && styles.pressed]}>
+                    <Text style={styles.saveText}>Save Profile</Text>
+                </Pressable>
             </View>
 
             <View style={styles.extraInfoContainer}>
@@ -100,6 +129,7 @@ const styles = StyleSheet.create({
 
     //Profile
     profileContainer: {
+        marginTop: 10,
         ...theme.spacing.trueCenter,
         backgroundColor: theme.color.primary,
         width: theme.spacing.standard,
@@ -194,5 +224,20 @@ const styles = StyleSheet.create({
     recordText: {
         color: theme.color.primary,
     },
+    formContainer: {
+        backgroundColor: theme.color.primary,
+        width: theme.spacing.standard,
+        padding: 20,
+        borderRadius: 4,
+        gap: 8,
+        elevation: 5,
+    },
+    inputLabel: { fontSize: 12, color: '#6d6d6d', marginTop: 4 },
+    input: { borderWidth: 1, borderColor: '#dedede', borderRadius: 4, paddingHorizontal: 12, paddingVertical: 10, fontSize: 14 },
+    error: { color: '#b42318', fontSize: 12 },
+    success: { color: '#24733a', fontSize: 12, fontWeight: '600' },
+    save: { backgroundColor: theme.color.buttonContent, borderRadius: 4, padding: 13, alignItems: 'center', marginTop: 6 },
+    saveText: { color: theme.color.primary, fontWeight: 'bold' },
+    pressed: { opacity: 0.7 },
 
 });
