@@ -15,21 +15,12 @@ export const theme = {
         full: '100%' as const,
     },
     typography: {
-        header: {
-            fontSize: 12,
-            fontWeight: 'bold' as const,
-            lineHeight: 24,
-        },
-        metric: {
-            fontSize: 10,
-        },
-        result: {
-            fontSize: 20,
+        title: {
+            fontSize: 25,
             fontWeight: 'bold' as const,
         },
-        action: {
-            fontSize: 16,
-            fontWeight: 'bold' as const,
-        },
+        description: {
+            fontSize: 14, 
+        }
     },
 };
