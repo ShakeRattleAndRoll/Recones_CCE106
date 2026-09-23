@@ -83,6 +83,7 @@ export default function HomeScreen() {
   
   return (
     <ScrollView style={styles.Container} contentContainerStyle={styles.ContainerSpacing}>
+
       <View style={styles.headerTitle}>
         <Text style={{...theme.typography.title}}>Student Portal</Text>
         <Text style={{ ...theme.typography.description }} >Login to enroll course</Text>
