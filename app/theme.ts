@@ -21,6 +21,11 @@ export const theme = {
         },
         description: {
             fontSize: 14, 
+        },
+        text: {
+            marginTop: 2,
+            fontSize: 10,
+            fontWeight: '300' as const,
         }
     },
 };
