@@ -4,10 +4,9 @@ import { useEffect, useState } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { theme } from './theme';
 
-// npx expo install expo-secure-store
+import { loginUser } from '@/src/service/authService';
 
-// Have mercy sir, nalibog ko sir unsa ning mga URL para diay na sa backend so nigamit kog fake API 
-// pang testing raman diay ang postman base sakong nasabtan
+// npx expo install expo-secure-store
 
 export default function HomeScreen() {
   const [loading, setLoading] = useState(false);
@@ -45,28 +44,11 @@ export default function HomeScreen() {
     setError(null);
     
     try {
-      const response = await fetch('https://dummyjson.com/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          username: username.trim(),
-          password: password.trim()
-        }),
-      })
-
-      const data = await response.json();
-
-      if (response.ok) {
-        await SecureStore.setItemAsync('userToken', data.accessToken);
-        await SecureStore.setItemAsync('userName', `${data.firstName} ${data.lastName}`);
-
-        router.replace('/dashboard');
-      } else {
-        setError (data.message || 'Invalid Username or Password');
-      }
-
-    } catch (err) {
-      setError('Network Connection Error');
+      await loginUser(username, password)
+      router.replace('/dashboard');
+    }
+    catch (err: any) {
+      setError(err.message || 'Login Faild: Please Check your Credentials.');
     } 
     finally {
       setLoading(false);
@@ -106,6 +88,7 @@ export default function HomeScreen() {
           <TextInput style={styles.LoginInput} 
             placeholder='emilyspass'
             value={password}
+            secureTextEntry={true}
             onChangeText={setPassword}
           />
         </View>
